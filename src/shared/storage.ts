@@ -3,6 +3,7 @@ import type {Streamer, Settings, TwitchAppToken} from './types';
 const STREAMERS_KEY = 'streamers';
 const SETTINGS_KEY = 'settings';
 const TOKEN_KEY = 'twitchAppToken';
+const AUTO_WATCH_TAB_KEY = 'autoWatchTabId';
 
 export async function getStreamers(): Promise<Streamer[]> {
   const data = await chrome.storage.sync.get([STREAMERS_KEY]);
@@ -33,4 +34,17 @@ export async function setAppToken(token: TwitchAppToken): Promise<void> {
 
 export async function clearAppToken(): Promise<void> {
   await chrome.storage.local.remove(TOKEN_KEY);
+}
+
+export async function getAutoWatchTabId(): Promise<number | null> {
+  const data = await chrome.storage.local.get([AUTO_WATCH_TAB_KEY]);
+  return (data[AUTO_WATCH_TAB_KEY] as number | undefined) ?? null;
+}
+
+export async function setAutoWatchTabId(tabId: number): Promise<void> {
+  await chrome.storage.local.set({[AUTO_WATCH_TAB_KEY]: tabId});
+}
+
+export async function clearAutoWatchTabId(): Promise<void> {
+  await chrome.storage.local.remove(AUTO_WATCH_TAB_KEY);
 }

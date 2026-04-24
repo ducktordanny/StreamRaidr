@@ -12,7 +12,6 @@ interface SettingsProps {
 const DEFAULT_SETTINGS: SettingsType = {
   clientId: '',
   clientSecret: '',
-  autoWatchEnabled: false,
   pollInterval: DEFAULT_POLL_INTERVAL_MINUTES,
 };
 

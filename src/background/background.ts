@@ -3,6 +3,7 @@ import {getSettings} from '../shared/storage';
 import {getStreamers, setStreamers} from '../shared/storage';
 import {fetchLiveStreams} from '../shared/twitchApi';
 import type {TwitchStream} from '../shared/types';
+import {executeAutoWatch, setupTabRemovalListener} from './autoWatch';
 
 const POLL_ALARM_NAME = 'streamraidr-poll';
 
@@ -36,6 +37,7 @@ async function runPollCycle(trigger: 'alarm' | 'install' | 'startup'): Promise<v
     });
 
     await setStreamers(updatedStreamers);
+    await executeAutoWatch();
     console.log(`[StreamRaidr] Poll complete (${trigger}): ${liveStreams.length} live`);
   } catch (error) {
     console.error('[StreamRaidr] Poll cycle failed:', error);
@@ -58,6 +60,7 @@ async function ensurePollingAlarm(): Promise<void> {
 }
 
 void ensurePollingAlarm();
+setupTabRemovalListener();
 
 chrome.runtime.onInstalled.addListener(() => {
   void ensurePollingAlarm();

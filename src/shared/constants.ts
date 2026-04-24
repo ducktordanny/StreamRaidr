@@ -5,3 +5,4 @@ export const TWITCH_API_BASE_URL = 'https://api.twitch.tv/helix';
 export const SEARCH_RESULTS_LIMIT = 8;
 export const AUTOCOMPLETE_DEBOUNCE_MS = 256;
 export const MAX_STREAMS_PER_REQUEST = 100;
+export const TWITCH_CHANNEL_URL_PREFIX = 'https://www.twitch.tv/';

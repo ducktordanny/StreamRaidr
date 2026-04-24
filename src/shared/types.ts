@@ -10,7 +10,6 @@ export interface Streamer {
 export interface Settings {
   clientId: string;
   clientSecret: string;
-  autoWatchEnabled: boolean;
   pollInterval: number;
 }
 
