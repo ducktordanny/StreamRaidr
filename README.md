@@ -4,7 +4,7 @@ A Chrome extension that tracks your favourite Twitch streamers and automatically
 
 ## Features
 
-- Add up to 10 Twitch streamers with live autocomplete search
+- Add up to 20 Twitch streamers with live autocomplete search
 - Drag-to-reorder your priority list
 - Live status, viewer count, and current game shown in the popup
 - **Auto-watch**: pin a browser tab that always follows your highest-ranked live streamer
