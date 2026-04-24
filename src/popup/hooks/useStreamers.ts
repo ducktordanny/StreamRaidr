@@ -21,6 +21,18 @@ export function useStreamers() {
       setStreamers(withRanks(data));
       setLoading(false);
     });
+
+    function handleStorageChange(
+      changes: Record<string, chrome.storage.StorageChange>,
+      areaName: string,
+    ) {
+      if (areaName === 'sync' && changes['streamers']?.newValue) {
+        setStreamers(withRanks(changes['streamers'].newValue as Streamer[]));
+      }
+    }
+
+    chrome.storage.onChanged.addListener(handleStorageChange);
+    return () => chrome.storage.onChanged.removeListener(handleStorageChange);
   }, []);
 
   const addStreamer = useCallback(

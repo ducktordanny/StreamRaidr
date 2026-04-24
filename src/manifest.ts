@@ -14,5 +14,9 @@ export default defineManifest({
     type: 'module',
   },
   permissions: ['storage', 'alarms', 'tabs'],
-  host_permissions: ['https://api.twitch.tv/*', 'https://www.twitch.tv/*'],
+  host_permissions: [
+    'https://api.twitch.tv/*',
+    'https://id.twitch.tv/*',
+    'https://www.twitch.tv/*',
+  ],
 });
