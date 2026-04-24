@@ -4,8 +4,23 @@ import {AddStreamer} from './components/AddStreamer';
 import {StreamerList} from './components/StreamerList';
 import {Settings} from './components/Settings';
 import {Button} from '../shared/components/ui/Button';
-import {getAutoWatchTabId, setAutoWatchTabId, clearAutoWatchTabId} from '../shared/storage';
-import {STORAGE_KEY_AUTO_WATCH_TAB} from '../shared/constants';
+import {
+  getAutoWatchTabId,
+  setAutoWatchTabId,
+  clearAutoWatchTabId,
+  getSettings,
+} from '../shared/storage';
+import {STORAGE_KEY_AUTO_WATCH_TAB, STORAGE_KEY_SETTINGS} from '../shared/constants';
+import type {Theme} from '../shared/types';
+
+function applyTheme(theme: Theme) {
+  if (theme === 'system') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+}
 
 export function Popup() {
   const {streamers, loading, addStreamer, removeStreamer, moveStreamer} = useStreamers();
@@ -23,13 +38,22 @@ export function Popup() {
       changes: Record<string, chrome.storage.StorageChange>,
       areaName: string,
     ) {
-      if (areaName === 'local' && STORAGE_KEY_AUTO_WATCH_TAB in changes) {
+      if (areaName !== 'local') return;
+      if (STORAGE_KEY_AUTO_WATCH_TAB in changes) {
         setLocalTabId((changes[STORAGE_KEY_AUTO_WATCH_TAB].newValue as number | undefined) ?? null);
+      }
+      if (STORAGE_KEY_SETTINGS in changes) {
+        const newSettings = changes[STORAGE_KEY_SETTINGS].newValue as {theme?: Theme} | undefined;
+        applyTheme(newSettings?.theme ?? 'system');
       }
     }
 
     chrome.storage.onChanged.addListener(handleStorageChange);
     return () => chrome.storage.onChanged.removeListener(handleStorageChange);
+  }, []);
+
+  useEffect(() => {
+    getSettings().then((settings) => applyTheme(settings?.theme ?? 'system'));
   }, []);
 
   async function handleEnableAutoWatch() {

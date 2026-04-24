@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {Button} from '../../shared/components/ui/Button';
 import {Input} from '../../shared/components/ui/Input';
 import {getSettings, setSettings, clearAppToken, clearAllData} from '../../shared/storage';
-import type {Settings as SettingsType} from '../../shared/types';
+import type {Settings as SettingsType, Theme} from '../../shared/types';
 import {DEFAULT_POLL_INTERVAL_MINUTES} from '../../shared/constants';
 
 interface SettingsProps {
@@ -13,6 +13,7 @@ const DEFAULT_SETTINGS: SettingsType = {
   clientId: '',
   clientSecret: '',
   pollInterval: DEFAULT_POLL_INTERVAL_MINUTES,
+  theme: 'system',
 };
 
 export function Settings({onClose}: SettingsProps) {
@@ -70,6 +71,18 @@ export function Settings({onClose}: SettingsProps) {
             setLocalSettings({...settings, pollInterval: Math.max(1, Number(event.target.value))})
           }
         />
+      </label>
+      <label className="settings-field">
+        <span className="settings-label">Theme</span>
+        <select
+          className="input"
+          value={settings.theme}
+          onChange={(event) => setLocalSettings({...settings, theme: event.target.value as Theme})}
+        >
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
       </label>
       <div className="settings-actions">
         <Button type="submit">Save</Button>

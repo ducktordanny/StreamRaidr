@@ -7,10 +7,13 @@ export interface Streamer {
   gameName?: string;
 }
 
+export type Theme = 'system' | 'light' | 'dark';
+
 export interface Settings {
   clientId: string;
   clientSecret: string;
   pollInterval: number;
+  theme: Theme;
 }
 
 export interface TwitchAppToken {
