@@ -11,7 +11,7 @@ function parseTokenFromUrl(redirectUrl: string): string | null {
   return params.get('access_token');
 }
 
-export async function login(): Promise<boolean> {
+async function authenticate(interactive: boolean): Promise<boolean> {
   const redirectUrl = getRedirectUrl();
   const params = new URLSearchParams({
     client_id: TWITCH_CLIENT_ID,
@@ -25,7 +25,7 @@ export async function login(): Promise<boolean> {
   try {
     const responseUrl = await chrome.identity.launchWebAuthFlow({
       url: authUrl,
-      interactive: true,
+      interactive,
     });
 
     if (!responseUrl) return false;
@@ -38,6 +38,14 @@ export async function login(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function login(): Promise<boolean> {
+  return authenticate(true);
+}
+
+export async function refreshToken(): Promise<boolean> {
+  return authenticate(false);
 }
 
 export async function logout(): Promise<void> {

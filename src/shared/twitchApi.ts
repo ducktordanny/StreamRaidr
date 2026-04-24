@@ -1,26 +1,32 @@
 import type {TwitchStream, TwitchSearchResult} from './types';
 import {getUserToken, clearUserToken} from './storage';
+import {refreshToken} from './twitchAuth';
 import {TWITCH_CLIENT_ID, TWITCH_API_BASE_URL, SEARCH_RESULTS_LIMIT} from './constants';
 
-async function getAccessToken(): Promise<string | null> {
-  const token = await getUserToken();
-  return token?.accessToken ?? null;
-}
-
-async function twitchFetch(url: string): Promise<Response | null> {
-  const accessToken = await getAccessToken();
-  if (!accessToken) return null;
-
-  const response = await fetch(url, {
+async function fetchWithToken(url: string, accessToken: string): Promise<Response> {
+  return fetch(url, {
     headers: {
       'Client-Id': TWITCH_CLIENT_ID,
       Authorization: `Bearer ${accessToken}`,
     },
   });
+}
+
+async function twitchFetch(url: string): Promise<Response | null> {
+  const token = await getUserToken();
+  if (!token) return null;
+
+  const response = await fetchWithToken(url, token.accessToken);
 
   if (response.status === 401) {
-    await clearUserToken();
-    return null;
+    const refreshed = await refreshToken();
+    if (!refreshed) {
+      await clearUserToken();
+      return null;
+    }
+    const newToken = await getUserToken();
+    if (!newToken) return null;
+    return fetchWithToken(url, newToken.accessToken);
   }
 
   if (!response.ok) {
