@@ -9,17 +9,82 @@ body {
 
 .popup {
   width: 320px;
-  min-height: 180px;
+  min-height: 128px;
   box-sizing: border-box;
   padding: 16px;
 }
 
 .popup h1 {
-  margin: 0 0 8px;
+  margin: 0 0 16px;
   font-size: 20px;
 }
 
 .popup p {
   margin: 0;
   font-size: 14px;
+}
+
+/* AddStreamer */
+
+.add-streamer-form {
+  margin-bottom: 16px;
+}
+
+.add-streamer-row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-streamer-row .input {
+  flex: 1;
+}
+
+.duplicate-msg {
+  color: #e74c3c;
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+/* StreamerList */
+
+.empty-msg {
+  color: #888;
+  font-size: 14px;
+}
+
+.streamer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* StreamerItem */
+
+.streamer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.streamer-item:last-child {
+  border-bottom: none;
+}
+
+.streamer-item-info {
+  display: flex;
+  align-items: center;
+}
+
+.streamer-rank {
+  font-weight: 600;
+  margin-right: 8px;
+  min-width: 16px;
+}
+
+.streamer-item-actions {
+  display: flex;
+  gap: 2px;
 }

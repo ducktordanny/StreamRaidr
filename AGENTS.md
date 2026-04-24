@@ -60,7 +60,7 @@ Keep code aligned with existing structure:
   - `components/` for presentational UI pieces
   - `hooks/` for popup logic and data access
 - `src/background/` - polling and auto-watch orchestration
-- `src/shared/` - shared types, constants, and storage helpers
+- `src/shared/` - shared types, constants, storage helpers, and reusable UI primitives (`components/ui/`)
 - `src/content/` - optional content script logic
 
 Prefer small, focused modules with clear boundaries.
@@ -70,7 +70,7 @@ Prefer small, focused modules with clear boundaries.
 Implement in this order unless user asks otherwise:
 
 1. Streamer add/remove and persistence
-2. Twitch Helix live-status checks (`GET /helix/streams` with `Client-ID`)
+2. Twitch Helix live-status checks (`GET /helix/streams` with `Client-ID`) — also add autocomplete to the Add Streamer input using the Twitch search endpoint
 3. Background polling with configurable intervals
 4. Auto-watch behavior (open highest-ranked live streamer)
 5. Settings UI (Client ID, interval, auto-watch toggle, clear data)
@@ -85,8 +85,10 @@ Implement in this order unless user asks otherwise:
 - Think in structure first; keep code organized and avoid messy implementations
 - Add only necessary dependencies
 - Do not add comments unless a block is non-obvious
+- Do not use single-letter variable names; prefer descriptive names
 - Prefer one-line `if` statements when they remain readable
 - Follow Prettier formatting from `.prettierrc`
+- CSS sizing scale: use only power-of-2 values (0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512; for sub-pixel: 0.1, 0.2, 0.4, 0.8). All spacing, sizing, and numeric CSS values should follow this doubling pattern. Font sizes may use standard type scale values (12, 14, 16, 20, 32).
 
 ## Safety and Data Rules
 

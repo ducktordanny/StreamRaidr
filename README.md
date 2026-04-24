@@ -4,7 +4,7 @@ StreamRaidr is a Chrome extension that lets you rank your favorite Twitch stream
 
 ## Features
 
-- Add and remove streamers by Twitch username
+- Add and remove streamers by Twitch username (with autocomplete, planned)
 - Keep a ranked list of streamers (highest priority first)
 - Check live status using the Twitch Helix API
 - Optional auto-watch mode to open the top-ranked live streamer
