@@ -1,0 +1,1 @@
+export const DEFAULT_POLL_INTERVAL_MINUTES = 1;
