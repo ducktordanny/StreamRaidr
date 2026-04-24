@@ -1,4 +1,4 @@
-import type {Streamer, Settings, TwitchAppToken} from './types';
+import type {Streamer, Settings, TwitchUserToken} from './types';
 import {
   STORAGE_KEY_STREAMERS,
   STORAGE_KEY_SETTINGS,
@@ -24,16 +24,16 @@ export async function setSettings(settings: Settings): Promise<void> {
   await chrome.storage.local.set({[STORAGE_KEY_SETTINGS]: settings});
 }
 
-export async function getAppToken(): Promise<TwitchAppToken | null> {
+export async function getUserToken(): Promise<TwitchUserToken | null> {
   const data = await chrome.storage.local.get([STORAGE_KEY_TOKEN]);
-  return (data[STORAGE_KEY_TOKEN] as TwitchAppToken | undefined) ?? null;
+  return (data[STORAGE_KEY_TOKEN] as TwitchUserToken | undefined) ?? null;
 }
 
-export async function setAppToken(token: TwitchAppToken): Promise<void> {
+export async function setUserToken(token: TwitchUserToken): Promise<void> {
   await chrome.storage.local.set({[STORAGE_KEY_TOKEN]: token});
 }
 
-export async function clearAppToken(): Promise<void> {
+export async function clearUserToken(): Promise<void> {
   await chrome.storage.local.remove(STORAGE_KEY_TOKEN);
 }
 

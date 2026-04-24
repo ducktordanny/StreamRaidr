@@ -33,8 +33,10 @@ export function useStreamers() {
       changes: Record<string, chrome.storage.StorageChange>,
       areaName: string,
     ) {
-      if (areaName === 'sync' && changes['streamers']?.newValue) {
-        setLocalStreamers(withRanks(changes['streamers'].newValue as Streamer[]));
+      if (areaName === 'sync' && 'streamers' in changes) {
+        setLocalStreamers(
+          withRanks((changes['streamers'].newValue as Streamer[] | undefined) ?? []),
+        );
       }
     }
 

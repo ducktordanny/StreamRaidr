@@ -1,5 +1,5 @@
 import {DEFAULT_POLL_INTERVAL_MINUTES, STORAGE_KEY_AUTO_WATCH_TAB} from '../shared/constants';
-import {getSettings} from '../shared/storage';
+import {getSettings, getUserToken} from '../shared/storage';
 import {STORAGE_KEY_SETTINGS, STORAGE_KEY_STREAMERS} from '../shared/constants';
 import {getStreamers, setStreamers} from '../shared/storage';
 import {fetchLiveStreams} from '../shared/twitchApi';
@@ -10,9 +10,9 @@ const POLL_ALARM_NAME = 'streamraidr-poll';
 
 async function runPollCycle(trigger: 'alarm' | 'install' | 'startup'): Promise<void> {
   try {
-    const settings = await getSettings();
-    if (!settings?.clientId || !settings?.clientSecret) {
-      console.log('[StreamRaidr] Skipping poll: no API credentials configured');
+    const token = await getUserToken();
+    if (!token) {
+      console.log('[StreamRaidr] Skipping poll: not logged in');
       return;
     }
 
@@ -20,7 +20,7 @@ async function runPollCycle(trigger: 'alarm' | 'install' | 'startup'): Promise<v
     if (streamers.length === 0) return;
 
     const usernames = streamers.map((streamer) => streamer.username);
-    const liveStreams = await fetchLiveStreams(settings.clientId, settings.clientSecret, usernames);
+    const liveStreams = await fetchLiveStreams(usernames);
 
     const liveStreamMap = new Map<string, TwitchStream>();
     for (const stream of liveStreams) {

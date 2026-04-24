@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import type {TwitchSearchResult} from '../../shared/types';
-import {getSettings} from '../../shared/storage';
 import {searchChannels} from '../../shared/twitchApi';
 import {AUTOCOMPLETE_DEBOUNCE_MS} from '../../shared/constants';
 
@@ -28,18 +27,7 @@ export function useTwitchApi() {
 
     debounceRef.current = setTimeout(async () => {
       try {
-        const settings = await getSettings();
-        if (!settings?.clientId || !settings?.clientSecret) {
-          setSearchResults([]);
-          setSearchLoading(false);
-          return;
-        }
-
-        const results = await searchChannels(
-          settings.clientId,
-          settings.clientSecret,
-          query.trim(),
-        );
+        const results = await searchChannels(query.trim());
         setSearchResults(results);
       } catch {
         setSearchResults([]);

@@ -9,8 +9,15 @@ import {
   setAutoWatchTabId,
   clearAutoWatchTabId,
   getSettings,
+  getUserToken,
 } from '../shared/storage';
-import {STORAGE_KEY_AUTO_WATCH_TAB, STORAGE_KEY_SETTINGS, MAX_STREAMERS} from '../shared/constants';
+import {login} from '../shared/twitchAuth';
+import {
+  STORAGE_KEY_AUTO_WATCH_TAB,
+  STORAGE_KEY_SETTINGS,
+  STORAGE_KEY_TOKEN,
+  MAX_STREAMERS,
+} from '../shared/constants';
 import type {Theme} from '../shared/types';
 
 function applyTheme(theme: Theme) {
@@ -25,10 +32,13 @@ function applyTheme(theme: Theme) {
 export function Popup() {
   const {streamers, loading, addStreamer, removeStreamer, reorderStreamer} = useStreamers();
   const [showSettings, setShowSettings] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [autoWatchTabId, setLocalTabId] = useState<number | null>(null);
   const [currentTabId, setCurrentTabId] = useState<number | null>(null);
 
   useEffect(() => {
+    getSettings().then((settings) => applyTheme(settings?.theme ?? 'system'));
+    getUserToken().then((token) => setLoggedIn(!!token));
     getAutoWatchTabId().then(setLocalTabId);
     chrome.tabs.query({active: true, currentWindow: true}).then(([tab]) => {
       if (tab?.id) setCurrentTabId(tab.id);
@@ -39,6 +49,9 @@ export function Popup() {
       areaName: string,
     ) {
       if (areaName !== 'local') return;
+      if (STORAGE_KEY_TOKEN in changes) {
+        setLoggedIn(!!changes[STORAGE_KEY_TOKEN].newValue);
+      }
       if (STORAGE_KEY_AUTO_WATCH_TAB in changes) {
         setLocalTabId((changes[STORAGE_KEY_AUTO_WATCH_TAB].newValue as number | undefined) ?? null);
       }
@@ -50,10 +63,6 @@ export function Popup() {
 
     chrome.storage.onChanged.addListener(handleStorageChange);
     return () => chrome.storage.onChanged.removeListener(handleStorageChange);
-  }, []);
-
-  useEffect(() => {
-    getSettings().then((settings) => applyTheme(settings?.theme ?? 'system'));
   }, []);
 
   async function handleEnableAutoWatch() {
@@ -99,6 +108,26 @@ export function Popup() {
     );
   }
 
+  function renderContent() {
+    if (showSettings) return <Settings onClose={() => setShowSettings(false)} />;
+    if (loggedIn === null || loading) return <p>Loading…</p>;
+    if (!loggedIn) {
+      return (
+        <div className="login-prompt">
+          <p>Login with Twitch to get started.</p>
+          <Button onClick={() => void login()}>Login with Twitch</Button>
+        </div>
+      );
+    }
+    return (
+      <>
+        {renderAutoWatchBar()}
+        <AddStreamer onAdd={addStreamer} disabled={streamers.length >= MAX_STREAMERS} />
+        <StreamerList streamers={streamers} onRemove={removeStreamer} onReorder={reorderStreamer} />
+      </>
+    );
+  }
+
   return (
     <main className="popup">
       <header className="popup-header">
@@ -107,21 +136,7 @@ export function Popup() {
           ⚙
         </Button>
       </header>
-      {showSettings ? (
-        <Settings onClose={() => setShowSettings(false)} />
-      ) : loading ? (
-        <p>Loading…</p>
-      ) : (
-        <>
-          {renderAutoWatchBar()}
-          <AddStreamer onAdd={addStreamer} disabled={streamers.length >= MAX_STREAMERS} />
-          <StreamerList
-            streamers={streamers}
-            onRemove={removeStreamer}
-            onReorder={reorderStreamer}
-          />
-        </>
-      )}
+      {renderContent()}
     </main>
   );
 }

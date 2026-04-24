@@ -13,15 +13,12 @@ export type NewStreamer = Pick<Streamer, 'username' | 'profileImageUrl' | 'isLiv
 export type Theme = 'system' | 'light' | 'dark';
 
 export interface Settings {
-  clientId: string;
-  clientSecret: string;
   pollInterval: number;
   theme: Theme;
 }
 
-export interface TwitchAppToken {
+export interface TwitchUserToken {
   accessToken: string;
-  expiresAt: number;
 }
 
 export interface TwitchSearchResult {

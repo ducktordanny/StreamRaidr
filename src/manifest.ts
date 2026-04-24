@@ -13,7 +13,7 @@ export default defineManifest({
     service_worker: 'src/background/background.ts',
     type: 'module',
   },
-  permissions: ['storage', 'alarms', 'tabs'],
+  permissions: ['storage', 'alarms', 'tabs', 'identity'],
   host_permissions: [
     'https://api.twitch.tv/*',
     'https://id.twitch.tv/*',
