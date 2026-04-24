@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import type {NewStreamer, Streamer} from '../../shared/types';
 import {getStreamers, setStreamers} from '../../shared/storage';
-import {MAX_STREAMERS} from '../../shared/constants';
+import {MAX_STREAMERS, STORAGE_KEY_STREAMERS} from '../../shared/constants';
 
 function reorder<T>(list: T[], fromIndex: number, toIndex: number): T[] {
   const item = list[fromIndex];
@@ -33,9 +33,9 @@ export function useStreamers() {
       changes: Record<string, chrome.storage.StorageChange>,
       areaName: string,
     ) {
-      if (areaName === 'sync' && 'streamers' in changes) {
+      if (areaName === 'sync' && STORAGE_KEY_STREAMERS in changes) {
         setLocalStreamers(
-          withRanks((changes['streamers'].newValue as Streamer[] | undefined) ?? []),
+          withRanks((changes[STORAGE_KEY_STREAMERS].newValue as Streamer[] | undefined) ?? []),
         );
       }
     }
