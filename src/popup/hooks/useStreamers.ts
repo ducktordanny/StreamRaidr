@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
-import type {Streamer} from '../../shared/types';
+import type {NewStreamer, Streamer} from '../../shared/types';
 import {getStreamers, setStreamers} from '../../shared/storage';
+import {MAX_STREAMERS} from '../../shared/constants';
 
 function withRanks(list: Streamer[]): Streamer[] {
   return list.map((streamer, index) => ({...streamer, rank: index + 1}));
@@ -36,16 +37,24 @@ export function useStreamers() {
   }, []);
 
   const addStreamer = useCallback(
-    (username: string): boolean => {
-      const trimmed = username.trim();
+    (streamer: NewStreamer): boolean => {
+      const trimmed = streamer.username.trim();
       if (!trimmed) return false;
 
       const id = trimmed.toLowerCase();
-      if (streamers.some((streamer) => streamer.id === id)) return false;
+      if (streamers.length >= MAX_STREAMERS) return false;
+      if (streamers.some((existing) => existing.id === id)) return false;
 
       const next = persist([
         ...streamers,
-        {id, username: trimmed, rank: streamers.length + 1, isLive: false},
+        {
+          id,
+          username: trimmed,
+          rank: streamers.length + 1,
+          isLive: streamer.isLive,
+          gameName: streamer.gameName,
+          profileImageUrl: streamer.profileImageUrl,
+        },
       ]);
       setLocalStreamers(next);
       return true;

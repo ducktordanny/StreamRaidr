@@ -10,7 +10,7 @@ import {
   clearAutoWatchTabId,
   getSettings,
 } from '../shared/storage';
-import {STORAGE_KEY_AUTO_WATCH_TAB, STORAGE_KEY_SETTINGS} from '../shared/constants';
+import {STORAGE_KEY_AUTO_WATCH_TAB, STORAGE_KEY_SETTINGS, MAX_STREAMERS} from '../shared/constants';
 import type {Theme} from '../shared/types';
 
 function applyTheme(theme: Theme) {
@@ -114,7 +114,7 @@ export function Popup() {
       ) : (
         <>
           {renderAutoWatchBar()}
-          <AddStreamer onAdd={addStreamer} />
+          <AddStreamer onAdd={addStreamer} disabled={streamers.length >= MAX_STREAMERS} />
           <StreamerList streamers={streamers} onRemove={removeStreamer} onMove={moveStreamer} />
         </>
       )}

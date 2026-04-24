@@ -20,6 +20,9 @@ export function StreamerItem({streamer, isFirst, isLast, onRemove, onMove}: Stre
     <li className="streamer-item">
       <span className="streamer-item-info">
         <span className="streamer-rank">{streamer.rank}</span>
+        {streamer.profileImageUrl && (
+          <img className="streamer-avatar" src={streamer.profileImageUrl} alt={streamer.username} />
+        )}
         <span className="streamer-name">
           {streamer.username}
           {streamer.isLive && (

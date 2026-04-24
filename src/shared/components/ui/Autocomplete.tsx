@@ -14,6 +14,7 @@ interface AutocompleteProps<TItem extends AutocompleteItem> {
   onClear: () => void;
   renderItem: (item: TItem, isActive: boolean) => ReactNode;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export function Autocomplete<TItem extends AutocompleteItem>({
@@ -24,6 +25,7 @@ export function Autocomplete<TItem extends AutocompleteItem>({
   onClear,
   renderItem,
   placeholder,
+  disabled,
 }: AutocompleteProps<TItem>) {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -69,6 +71,7 @@ export function Autocomplete<TItem extends AutocompleteItem>({
         type="text"
         placeholder={placeholder}
         value={value}
+        disabled={disabled}
         onChange={(event) => {
           onChange(event.target.value);
           setHighlightedIndex(-1);

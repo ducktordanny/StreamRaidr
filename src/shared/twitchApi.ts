@@ -1,11 +1,6 @@
 import type {TwitchAppToken, TwitchStream, TwitchSearchResult} from './types';
 import {getAppToken, setAppToken, clearAppToken} from './storage';
-import {
-  TWITCH_TOKEN_URL,
-  TWITCH_API_BASE_URL,
-  SEARCH_RESULTS_LIMIT,
-  MAX_STREAMS_PER_REQUEST,
-} from './constants';
+import {TWITCH_TOKEN_URL, TWITCH_API_BASE_URL, SEARCH_RESULTS_LIMIT} from './constants';
 
 let tokenRefreshPromise: Promise<string> | null = null;
 
@@ -85,30 +80,20 @@ export async function fetchLiveStreams(
 ): Promise<TwitchStream[]> {
   if (usernames.length === 0) return [];
 
-  const results: TwitchStream[] = [];
-
-  for (let offset = 0; offset < usernames.length; offset += MAX_STREAMS_PER_REQUEST) {
-    const batch = usernames.slice(offset, offset + MAX_STREAMS_PER_REQUEST);
-    const params = new URLSearchParams();
-    for (const username of batch) {
-      params.append('user_login', username);
-    }
-
-    const batchResults = await withAuthRetry<TwitchStream[]>(
-      clientId,
-      clientSecret,
-      (accessToken) =>
-        twitchFetch(`${TWITCH_API_BASE_URL}/streams?${params}`, clientId, accessToken),
-      async (response) => {
-        const body = (await response.json()) as {data: TwitchStream[]};
-        return body.data;
-      },
-    );
-
-    results.push(...batchResults);
+  const params = new URLSearchParams();
+  for (const username of usernames) {
+    params.append('user_login', username);
   }
 
-  return results;
+  return withAuthRetry<TwitchStream[]>(
+    clientId,
+    clientSecret,
+    (accessToken) => twitchFetch(`${TWITCH_API_BASE_URL}/streams?${params}`, clientId, accessToken),
+    async (response) => {
+      const body = (await response.json()) as {data: TwitchStream[]};
+      return body.data;
+    },
+  );
 }
 
 export async function searchChannels(

@@ -2,19 +2,21 @@ import {useState} from 'react';
 import {Button} from '../../shared/components/ui/Button';
 import {Autocomplete} from '../../shared/components/ui/Autocomplete';
 import {useTwitchApi} from '../hooks/useTwitchApi';
-import type {TwitchSearchResult} from '../../shared/types';
+import type {NewStreamer, TwitchSearchResult} from '../../shared/types';
+import {MAX_STREAMERS} from '../../shared/constants';
 
 interface AddStreamerProps {
-  onAdd: (username: string) => boolean;
+  onAdd: (streamer: NewStreamer) => boolean;
+  disabled?: boolean;
 }
 
-export function AddStreamer({onAdd}: AddStreamerProps) {
+export function AddStreamer({onAdd, disabled}: AddStreamerProps) {
   const [value, setValue] = useState('');
   const [duplicate, setDuplicate] = useState(false);
   const {searchResults, search, clearResults} = useTwitchApi();
 
-  function selectStreamer(username: string) {
-    if (onAdd(username)) {
+  function selectStreamer(data: NewStreamer) {
+    if (onAdd(data)) {
       setValue('');
       setDuplicate(false);
     } else {
@@ -25,23 +27,47 @@ export function AddStreamer({onAdd}: AddStreamerProps) {
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (value.trim()) selectStreamer(value.trim());
+    const trimmed = value.trim();
+    if (!trimmed) return;
+
+    const match = searchResults.find(
+      (result) => result.broadcaster_login.toLowerCase() === trimmed.toLowerCase(),
+    );
+
+    if (!match) return;
+    selectStreamer({
+      username: match.broadcaster_login,
+      isLive: match.is_live,
+      gameName: match.game_name,
+      profileImageUrl: match.thumbnail_url,
+    });
   }
 
   return (
     <form className="add-streamer-form" onSubmit={handleSubmit}>
-      <div className="add-streamer-row">
+      <div
+        className="add-streamer-row"
+        title={disabled ? `Maximum of ${MAX_STREAMERS} streamers reached` : undefined}
+      >
         <Autocomplete<TwitchSearchResult>
           value={value}
+          disabled={disabled}
           onChange={(inputValue) => {
             setValue(inputValue);
             setDuplicate(false);
             search(inputValue);
           }}
           items={searchResults}
-          onSelect={(result) => selectStreamer(result.broadcaster_login)}
+          onSelect={(result) =>
+            selectStreamer({
+              username: result.broadcaster_login,
+              isLive: result.is_live,
+              gameName: result.game_name,
+              profileImageUrl: result.thumbnail_url,
+            })
+          }
           onClear={clearResults}
-          placeholder="Enter Twitch username"
+          placeholder={disabled ? `Max ${MAX_STREAMERS} streamers` : 'Enter Twitch username'}
           renderItem={(result) => (
             <>
               <span className="autocomplete-result-name">{result.display_name}</span>
@@ -56,7 +82,7 @@ export function AddStreamer({onAdd}: AddStreamerProps) {
             </>
           )}
         />
-        <Button type="submit" disabled={!value.trim()}>
+        <Button type="submit" disabled={disabled || !value.trim()}>
           Add
         </Button>
       </div>

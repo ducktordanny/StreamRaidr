@@ -145,6 +145,14 @@ body {
   min-width: 16px;
 }
 
+.streamer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
 .streamer-name {
   display: flex;
   flex-direction: column;

@@ -5,7 +5,10 @@ export interface Streamer {
   isLive: boolean;
   viewerCount?: number;
   gameName?: string;
+  profileImageUrl?: string;
 }
+
+export type NewStreamer = Pick<Streamer, 'username' | 'profileImageUrl' | 'isLive' | 'gameName'>;
 
 export type Theme = 'system' | 'light' | 'dark';
 
