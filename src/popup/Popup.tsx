@@ -21,12 +21,11 @@ import {
 import type {Theme} from '../shared/types';
 
 function applyTheme(theme: Theme) {
-  if (theme === 'system') {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-  } else {
-    document.documentElement.setAttribute('data-theme', theme);
-  }
+  const prefersDark =
+    theme === 'dark' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', prefersDark);
+  document.documentElement.classList.toggle('light', !prefersDark);
 }
 
 export function Popup() {
