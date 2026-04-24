@@ -8,11 +8,19 @@ import {executeAutoWatch, setupTabRemovalListener} from './autoWatch';
 
 const POLL_ALARM_NAME = 'streamraidr-poll';
 
+function log(...args: unknown[]) {
+  console.log(`[StreamRaidr ${new Date().toLocaleString()}]`, ...args);
+}
+
+function logError(...args: unknown[]) {
+  console.error(`[StreamRaidr ${new Date().toLocaleString()}]`, ...args);
+}
+
 async function runPollCycle(trigger: 'alarm' | 'install' | 'startup'): Promise<void> {
   try {
     const token = await getUserToken();
     if (!token) {
-      console.log('[StreamRaidr] Skipping poll: not logged in');
+      log('Skipping poll: not logged in');
       return;
     }
 
@@ -39,9 +47,9 @@ async function runPollCycle(trigger: 'alarm' | 'install' | 'startup'): Promise<v
 
     await setStreamers(updatedStreamers);
     await executeAutoWatch();
-    console.log(`[StreamRaidr] Poll complete (${trigger}): ${liveStreams.length} live`);
+    log(`Poll complete (${trigger}): ${liveStreams.length} live`);
   } catch (error) {
-    console.error('[StreamRaidr] Poll cycle failed:', error);
+    logError('Poll cycle failed:', error);
   }
 }
 
