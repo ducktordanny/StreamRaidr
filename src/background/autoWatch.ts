@@ -26,9 +26,16 @@ export async function executeAutoWatch(): Promise<void> {
   }
 }
 
-export function setupTabRemovalListener(): void {
+export function setupTabListeners(): void {
   chrome.tabs.onRemoved.addListener(async (closedTabId) => {
     const autoWatchTabId = await getAutoWatchTabId();
     if (autoWatchTabId === closedTabId) await clearAutoWatchTabId();
+  });
+
+  chrome.tabs.onUpdated.addListener(async (tabId, _changeInfo, tab) => {
+    if (!tab.url) return;
+    const autoWatchTabId = await getAutoWatchTabId();
+    if (tabId !== autoWatchTabId) return;
+    if (!tab.url.startsWith(TWITCH_CHANNEL_URL_PREFIX)) await clearAutoWatchTabId();
   });
 }

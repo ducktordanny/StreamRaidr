@@ -4,7 +4,7 @@ import {STORAGE_KEY_SETTINGS, STORAGE_KEY_STREAMERS} from '../shared/constants';
 import {getStreamers, setStreamers} from '../shared/storage';
 import {fetchLiveStreams} from '../shared/twitchApi';
 import type {TwitchStream} from '../shared/types';
-import {executeAutoWatch, setupTabRemovalListener} from './autoWatch';
+import {executeAutoWatch, setupTabListeners} from './autoWatch';
 
 const POLL_ALARM_NAME = 'streamraidr-poll';
 
@@ -69,7 +69,7 @@ async function ensurePollingAlarm(): Promise<void> {
 }
 
 void ensurePollingAlarm();
-setupTabRemovalListener();
+setupTabListeners();
 
 chrome.runtime.onInstalled.addListener(() => {
   void ensurePollingAlarm();
