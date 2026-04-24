@@ -4,7 +4,7 @@ export default defineManifest({
   manifest_version: 3,
   name: 'StreamRaidr',
   version: '0.1.0',
-  description: 'Rank Twitch streamers and auto-open the highest-ranked live stream.',
+  description: 'Your top streamers, always on.',
   action: {
     default_title: 'StreamRaidr',
     default_popup: 'src/popup/index.html',
