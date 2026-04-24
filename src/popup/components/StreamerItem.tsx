@@ -1,5 +1,6 @@
 import type {Streamer} from '../../shared/types';
 import {Button} from '../../shared/components/ui/Button';
+import {TWITCH_CHANNEL_URL_PREFIX} from '../../shared/constants';
 
 interface StreamerItemProps {
   streamer: Streamer;
@@ -43,7 +44,14 @@ export function StreamerItem({
           <img className="streamer-avatar" src={streamer.profileImageUrl} alt={streamer.username} />
         )}
         <span className="streamer-name">
-          {streamer.username}
+          <a
+            className="streamer-username"
+            href={`${TWITCH_CHANNEL_URL_PREFIX}${streamer.username}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {streamer.username}
+          </a>
           {streamer.isLive && (
             <span className="streamer-live-status">
               <span className="streamer-live-dot" />
