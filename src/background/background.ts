@@ -1,5 +1,6 @@
 import {DEFAULT_POLL_INTERVAL_MINUTES} from '../shared/constants';
 import {getSettings} from '../shared/storage';
+import {STORAGE_KEY_SETTINGS} from '../shared/constants';
 import {getStreamers, setStreamers} from '../shared/storage';
 import {fetchLiveStreams} from '../shared/twitchApi';
 import type {TwitchStream} from '../shared/types';
@@ -76,4 +77,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name !== POLL_ALARM_NAME) return;
 
   void runPollCycle('alarm');
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local' && STORAGE_KEY_SETTINGS in changes) {
+    void ensurePollingAlarm();
+  }
 });

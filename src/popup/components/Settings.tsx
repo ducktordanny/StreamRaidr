@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {Button} from '../../shared/components/ui/Button';
 import {Input} from '../../shared/components/ui/Input';
-import {getSettings, setSettings, clearAppToken} from '../../shared/storage';
+import {getSettings, setSettings, clearAppToken, clearAllData} from '../../shared/storage';
 import type {Settings as SettingsType} from '../../shared/types';
 import {DEFAULT_POLL_INTERVAL_MINUTES} from '../../shared/constants';
 
@@ -16,12 +16,12 @@ const DEFAULT_SETTINGS: SettingsType = {
 };
 
 export function Settings({onClose}: SettingsProps) {
-  const [settings, setLocal] = useState<SettingsType>(DEFAULT_SETTINGS);
+  const [settings, setLocalSettings] = useState<SettingsType>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     getSettings().then((data) => {
-      if (data) setLocal(data);
+      if (data) setLocalSettings(data);
     });
   }, []);
 
@@ -33,6 +33,12 @@ export function Settings({onClose}: SettingsProps) {
     setTimeout(() => setSaved(false), 1024);
   }
 
+  async function handleClearData() {
+    if (!confirm('This will remove all streamers, settings, and tokens. Continue?')) return;
+    await clearAllData();
+    setLocalSettings(DEFAULT_SETTINGS);
+  }
+
   return (
     <form className="settings-form" onSubmit={handleSave}>
       <label className="settings-field">
@@ -41,7 +47,7 @@ export function Settings({onClose}: SettingsProps) {
           type="text"
           value={settings.clientId}
           placeholder="Twitch Client ID"
-          onChange={(event) => setLocal({...settings, clientId: event.target.value})}
+          onChange={(event) => setLocalSettings({...settings, clientId: event.target.value})}
         />
       </label>
       <label className="settings-field">
@@ -50,13 +56,28 @@ export function Settings({onClose}: SettingsProps) {
           type="password"
           value={settings.clientSecret}
           placeholder="Twitch Client Secret"
-          onChange={(event) => setLocal({...settings, clientSecret: event.target.value})}
+          onChange={(event) => setLocalSettings({...settings, clientSecret: event.target.value})}
+        />
+      </label>
+      <label className="settings-field">
+        <span className="settings-label">Poll interval (minutes)</span>
+        <Input
+          type="number"
+          min={1}
+          max={60}
+          value={String(settings.pollInterval)}
+          onChange={(event) =>
+            setLocalSettings({...settings, pollInterval: Math.max(1, Number(event.target.value))})
+          }
         />
       </label>
       <div className="settings-actions">
         <Button type="submit">Save</Button>
-        <Button type="button" variant="icon" onClick={onClose} title="Close settings">
-          ×
+        <Button type="button" variant="danger" onClick={handleClearData}>
+          Clear data
+        </Button>
+        <Button type="button" variant="secondary" onClick={onClose}>
+          Cancel
         </Button>
         {saved && <span className="settings-saved">Saved</span>}
       </div>

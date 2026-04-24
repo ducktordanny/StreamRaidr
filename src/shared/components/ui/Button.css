@@ -19,6 +19,33 @@
   font-size: 14px;
 }
 
+/* Secondary */
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: transparent;
+  outline: 1px solid #ccc;
+  color: #555;
+  font-size: 14px;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+/* Danger */
+
+.btn-danger {
+  padding: 8px 16px;
+  background: #e74c3c;
+  color: #fff;
+  font-size: 14px;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #c0392b;
+}
+
 /* Icon */
 
 .btn-icon {

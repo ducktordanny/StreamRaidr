@@ -5,6 +5,7 @@ import {StreamerList} from './components/StreamerList';
 import {Settings} from './components/Settings';
 import {Button} from '../shared/components/ui/Button';
 import {getAutoWatchTabId, setAutoWatchTabId, clearAutoWatchTabId} from '../shared/storage';
+import {STORAGE_KEY_AUTO_WATCH_TAB} from '../shared/constants';
 
 export function Popup() {
   const {streamers, loading, addStreamer, removeStreamer, moveStreamer} = useStreamers();
@@ -22,8 +23,8 @@ export function Popup() {
       changes: Record<string, chrome.storage.StorageChange>,
       areaName: string,
     ) {
-      if (areaName === 'local' && 'autoWatchTabId' in changes) {
-        setLocalTabId((changes['autoWatchTabId'].newValue as number | undefined) ?? null);
+      if (areaName === 'local' && STORAGE_KEY_AUTO_WATCH_TAB in changes) {
+        setLocalTabId((changes[STORAGE_KEY_AUTO_WATCH_TAB].newValue as number | undefined) ?? null);
       }
     }
 

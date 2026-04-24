@@ -1,50 +1,56 @@
 import type {Streamer, Settings, TwitchAppToken} from './types';
-
-const STREAMERS_KEY = 'streamers';
-const SETTINGS_KEY = 'settings';
-const TOKEN_KEY = 'twitchAppToken';
-const AUTO_WATCH_TAB_KEY = 'autoWatchTabId';
+import {
+  STORAGE_KEY_STREAMERS,
+  STORAGE_KEY_SETTINGS,
+  STORAGE_KEY_TOKEN,
+  STORAGE_KEY_AUTO_WATCH_TAB,
+} from './constants';
 
 export async function getStreamers(): Promise<Streamer[]> {
-  const data = await chrome.storage.sync.get([STREAMERS_KEY]);
-  return (data[STREAMERS_KEY] as Streamer[] | undefined) ?? [];
+  const data = await chrome.storage.sync.get([STORAGE_KEY_STREAMERS]);
+  return (data[STORAGE_KEY_STREAMERS] as Streamer[] | undefined) ?? [];
 }
 
 export async function setStreamers(streamers: Streamer[]): Promise<void> {
-  await chrome.storage.sync.set({[STREAMERS_KEY]: streamers});
+  await chrome.storage.sync.set({[STORAGE_KEY_STREAMERS]: streamers});
 }
 
 export async function getSettings(): Promise<Settings | null> {
-  const data = await chrome.storage.local.get([SETTINGS_KEY]);
-  return (data[SETTINGS_KEY] as Settings | undefined) ?? null;
+  const data = await chrome.storage.local.get([STORAGE_KEY_SETTINGS]);
+  return (data[STORAGE_KEY_SETTINGS] as Settings | undefined) ?? null;
 }
 
 export async function setSettings(settings: Settings): Promise<void> {
-  await chrome.storage.local.set({[SETTINGS_KEY]: settings});
+  await chrome.storage.local.set({[STORAGE_KEY_SETTINGS]: settings});
 }
 
 export async function getAppToken(): Promise<TwitchAppToken | null> {
-  const data = await chrome.storage.local.get([TOKEN_KEY]);
-  return (data[TOKEN_KEY] as TwitchAppToken | undefined) ?? null;
+  const data = await chrome.storage.local.get([STORAGE_KEY_TOKEN]);
+  return (data[STORAGE_KEY_TOKEN] as TwitchAppToken | undefined) ?? null;
 }
 
 export async function setAppToken(token: TwitchAppToken): Promise<void> {
-  await chrome.storage.local.set({[TOKEN_KEY]: token});
+  await chrome.storage.local.set({[STORAGE_KEY_TOKEN]: token});
 }
 
 export async function clearAppToken(): Promise<void> {
-  await chrome.storage.local.remove(TOKEN_KEY);
+  await chrome.storage.local.remove(STORAGE_KEY_TOKEN);
 }
 
 export async function getAutoWatchTabId(): Promise<number | null> {
-  const data = await chrome.storage.local.get([AUTO_WATCH_TAB_KEY]);
-  return (data[AUTO_WATCH_TAB_KEY] as number | undefined) ?? null;
+  const data = await chrome.storage.local.get([STORAGE_KEY_AUTO_WATCH_TAB]);
+  return (data[STORAGE_KEY_AUTO_WATCH_TAB] as number | undefined) ?? null;
 }
 
 export async function setAutoWatchTabId(tabId: number): Promise<void> {
-  await chrome.storage.local.set({[AUTO_WATCH_TAB_KEY]: tabId});
+  await chrome.storage.local.set({[STORAGE_KEY_AUTO_WATCH_TAB]: tabId});
 }
 
 export async function clearAutoWatchTabId(): Promise<void> {
-  await chrome.storage.local.remove(AUTO_WATCH_TAB_KEY);
+  await chrome.storage.local.remove(STORAGE_KEY_AUTO_WATCH_TAB);
+}
+
+export async function clearAllData(): Promise<void> {
+  await chrome.storage.sync.clear();
+  await chrome.storage.local.clear();
 }
