@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import type {Streamer} from '../../shared/types';
-import {getStreamers, setStreamers as saveStreamers} from '../../shared/storage';
+import {getStreamers, setStreamers} from '../../shared/storage';
 
 function withRanks(list: Streamer[]): Streamer[] {
   return list.map((streamer, index) => ({...streamer, rank: index + 1}));
@@ -8,17 +8,17 @@ function withRanks(list: Streamer[]): Streamer[] {
 
 function persist(list: Streamer[]): Streamer[] {
   const ranked = withRanks(list);
-  void saveStreamers(ranked);
+  void setStreamers(ranked);
   return ranked;
 }
 
 export function useStreamers() {
-  const [streamers, setStreamers] = useState<Streamer[]>([]);
+  const [streamers, setLocalStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getStreamers().then((data) => {
-      setStreamers(withRanks(data));
+      setLocalStreamers(withRanks(data));
       setLoading(false);
     });
 
@@ -27,7 +27,7 @@ export function useStreamers() {
       areaName: string,
     ) {
       if (areaName === 'sync' && changes['streamers']?.newValue) {
-        setStreamers(withRanks(changes['streamers'].newValue as Streamer[]));
+        setLocalStreamers(withRanks(changes['streamers'].newValue as Streamer[]));
       }
     }
 
@@ -47,7 +47,7 @@ export function useStreamers() {
         ...streamers,
         {id, username: trimmed, rank: streamers.length + 1, isLive: false},
       ]);
-      setStreamers(next);
+      setLocalStreamers(next);
       return true;
     },
     [streamers],
@@ -56,7 +56,7 @@ export function useStreamers() {
   const removeStreamer = useCallback(
     (id: string) => {
       const next = persist(streamers.filter((streamer) => streamer.id !== id));
-      setStreamers(next);
+      setLocalStreamers(next);
     },
     [streamers],
   );
@@ -72,7 +72,7 @@ export function useStreamers() {
       const copy = [...streamers];
       [copy[idx], copy[targetIdx]] = [copy[targetIdx], copy[idx]];
       const next = persist(copy);
-      setStreamers(next);
+      setLocalStreamers(next);
     },
     [streamers],
   );
