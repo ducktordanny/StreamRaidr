@@ -6,7 +6,7 @@ Project instructions for coding agents working in this repository.
 
 Build **StreamRaidr**, a Chrome extension that lets users rank Twitch streamers and optionally auto-open the highest-ranked streamer who is live.
 
-Current phase: **Phase 1 MVP (Client ID-based, no OAuth)**.
+Current phase: **Post-MVP polish**.
 
 ## Source of Truth
 
@@ -28,9 +28,9 @@ If guidance conflicts, follow this priority:
 - Background service worker (no persistent background page)
 - Storage:
   - `chrome.storage.sync` for streamer rankings/list
-  - `chrome.storage.local` for Twitch Client ID
+  - `chrome.storage.local` for auth token, settings, and auto-watch tab ID
 - No server-side component
-- No OAuth for MVP
+- Auth: Twitch OAuth implicit flow via `chrome.identity.launchWebAuthFlow`
 
 ## Package Manager and Tooling
 
@@ -65,15 +65,18 @@ Keep code aligned with existing structure:
 
 Prefer small, focused modules with clear boundaries.
 
-## MVP Feature Expectations
+## Completed Features
 
-Implement in this order unless user asks otherwise:
+All Phase 1 MVP features are shipped:
 
-1. Streamer add/remove and persistence
-2. Twitch Helix live-status checks (`GET /helix/streams` with `Client-ID`) — also add autocomplete to the Add Streamer input using the Twitch search endpoint
-3. Background polling with configurable intervals
-4. Auto-watch behavior (open highest-ranked live streamer)
-5. Settings UI (Client ID, interval, auto-watch toggle, clear data)
+1. Streamer add/remove and persistence (`chrome.storage.sync`)
+2. Twitch OAuth login via `chrome.identity` (implicit flow, silent renew on 401)
+3. Autocomplete streamer search using `GET /helix/search/channels`
+4. Live-status checks via `GET /helix/streams`, shown with viewer count and game
+5. Background polling with configurable interval (`chrome.alarms`)
+6. Auto-watch: designated tab always follows the highest-ranked live streamer
+7. Settings UI: login/logout, poll interval, theme (light/dark/system), clear data
+8. Drag-to-reorder streamer list
 
 ## Coding Guidelines
 

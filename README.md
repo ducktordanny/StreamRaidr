@@ -1,35 +1,15 @@
 # StreamRaidr
 
-StreamRaidr is a Chrome extension that lets you rank your favorite Twitch streamers and optionally auto-open the highest-ranked streamer who is currently live.
+A Chrome extension that tracks your favourite Twitch streamers and automatically switches a designated tab to whoever is live at the top of your list.
 
 ## Features
 
-- Add and remove streamers by Twitch username (with autocomplete, planned)
-- Keep a ranked list of streamers (highest priority first)
-- Check live status using the Twitch Helix API
-- Optional auto-watch mode to open the top-ranked live streamer
-- Store your Twitch Client ID and extension settings locally
-
-## Tech Stack
-
-- React 18
-- TypeScript (strict mode)
-- Vite
-- `@crxjs/vite-plugin`
-- Chrome Extension Manifest V3
-
-## Project Structure
-
-```text
-src/
-  manifest.ts
-  popup/
-  background/
-  shared/
-  content/
-public/
-  icons/
-```
+- Add up to 10 Twitch streamers with live autocomplete search
+- Drag-to-reorder your priority list
+- Live status, viewer count, and current game shown in the popup
+- **Auto-watch**: pin a browser tab that always follows your highest-ranked live streamer
+- Configurable poll interval (1–60 minutes)
+- Light / dark / system theme
 
 ## Requirements
 
@@ -37,49 +17,75 @@ public/
 - pnpm
 - Google Chrome
 
-## Getting Started
+## Setup
 
-1. Install dependencies:
+### 1. Create a Twitch application
 
-   ```bash
-   pnpm install
+1. Go to the [Twitch Developer Console](https://dev.twitch.tv/console/apps) and create a new application.
+2. Set the **OAuth Redirect URL** to:
    ```
-
-2. Start development:
-
-   ```bash
-   pnpm dev
+   https://<your-extension-id>.chromiumapp.org/twitch
    ```
+   > **Where to find your extension ID:** load the extension in Chrome first (see step 4 below), then copy the ID from `chrome://extensions`. The full redirect URL is also printed to the service worker console on first load.
+3. Set **Category** to _Browser Extension_.
+4. Copy the **Client ID**.
 
-3. Build the extension:
+### 2. Configure environment variables
 
-   ```bash
-   pnpm build
-   ```
+```bash
+cp .env.example .env
+```
 
-4. Load the built extension in Chrome:
-   - Open `chrome://extensions`
-   - Enable **Developer mode**
-   - Click **Load unpacked**
-   - Select the `dist/` directory
+Open `.env` and fill in your Client ID:
+
+```
+VITE_TWITCH_CLIENT_ID=your_twitch_client_id_here
+```
+
+### 3. Install dependencies and build
+
+```bash
+pnpm install
+pnpm build
+```
+
+### 4. Load the extension in Chrome
+
+1. Open `chrome://extensions`
+2. Enable **Developer mode**
+3. Click **Load unpacked** and select the `dist/` folder
+
+## Development
+
+```bash
+pnpm dev
+```
+
+Vite watches for changes and rebuilds automatically. After each rebuild, click the reload icon on `chrome://extensions`.
 
 ## Available Scripts
 
-- `pnpm dev` - Start Vite dev server
-- `pnpm typecheck` - Run TypeScript checks
-- `pnpm build` - Typecheck and build extension
-- `pnpm format` - Format files with Prettier
-- `pnpm format:check` - Check formatting
+| Command             | Description                            |
+| ------------------- | -------------------------------------- |
+| `pnpm dev`          | Start Vite in watch mode               |
+| `pnpm build`        | Typecheck + build extension to `dist/` |
+| `pnpm typecheck`    | Run TypeScript checks only             |
+| `pnpm format`       | Format all files with Prettier         |
+| `pnpm format:check` | Check formatting without writing       |
 
-## Twitch Setup
+## Project Structure
 
-To check stream live status, create a Twitch Developer application and copy your **Client ID** into extension settings.
+```
+src/
+  manifest.ts          # Chrome extension manifest
+  background/          # Service worker (polling, auto-watch)
+  popup/               # React popup UI
+  shared/              # Types, storage, Twitch API client
+  content/             # Content script (unused placeholder)
+```
 
-- Console: https://dev.twitch.tv/console
-- API used: `GET https://api.twitch.tv/helix/streams`
-- Header required: `Client-ID: <your-client-id>`
+## Tech Stack
 
-## Notes
-
-- This project currently uses a Client ID flow (no OAuth yet)
-- No server-side component is required for the current version
+- React 18 + TypeScript
+- Vite + [@crxjs/vite-plugin](https://crxjs.dev/vite-plugin)
+- Chrome Extension Manifest V3
