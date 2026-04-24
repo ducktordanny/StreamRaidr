@@ -3,6 +3,12 @@ import type {NewStreamer, Streamer} from '../../shared/types';
 import {getStreamers, setStreamers} from '../../shared/storage';
 import {MAX_STREAMERS} from '../../shared/constants';
 
+function reorder<T>(list: T[], fromIndex: number, toIndex: number): T[] {
+  const item = list[fromIndex];
+  const without = list.filter((_, index) => index !== fromIndex);
+  return [...without.slice(0, toIndex), item, ...without.slice(toIndex)];
+}
+
 function withRanks(list: Streamer[]): Streamer[] {
   return list.map((streamer, index) => ({...streamer, rank: index + 1}));
 }
@@ -70,21 +76,16 @@ export function useStreamers() {
     [streamers],
   );
 
-  const moveStreamer = useCallback(
-    (id: string, direction: 'up' | 'down') => {
-      const idx = streamers.findIndex((streamer) => streamer.id === id);
-      if (idx === -1) return;
+  const reorderStreamer = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      if (fromIndex === toIndex) return;
+      if (fromIndex < 0 || toIndex < 0) return;
+      if (fromIndex >= streamers.length || toIndex >= streamers.length) return;
 
-      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
-      if (targetIdx < 0 || targetIdx >= streamers.length) return;
-
-      const copy = [...streamers];
-      [copy[idx], copy[targetIdx]] = [copy[targetIdx], copy[idx]];
-      const next = persist(copy);
-      setLocalStreamers(next);
+      setLocalStreamers(persist(reorder(streamers, fromIndex, toIndex)));
     },
     [streamers],
   );
 
-  return {streamers, loading, addStreamer, removeStreamer, moveStreamer};
+  return {streamers, loading, addStreamer, removeStreamer, reorderStreamer};
 }

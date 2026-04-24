@@ -133,16 +133,31 @@ body {
   border-bottom: none;
 }
 
+.streamer-item-dragging {
+  opacity: 0.4;
+}
+
+.streamer-item-drop-above {
+  box-shadow: 0 -2px 0 0 var(--color-accent);
+}
+
+.streamer-item-drop-below {
+  box-shadow: 0 2px 0 0 var(--color-accent);
+}
+
 .streamer-item-info {
   display: flex;
   align-items: center;
   min-width: 0;
 }
 
-.streamer-rank {
-  font-weight: 600;
+.streamer-drag-handle {
+  cursor: grab;
+  color: var(--color-text-faint);
   margin-right: 8px;
-  min-width: 16px;
+  font-size: 14px;
+  user-select: none;
+  touch-action: none;
 }
 
 .streamer-avatar {

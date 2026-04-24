@@ -3,10 +3,11 @@ import {Button} from '../../shared/components/ui/Button';
 
 interface StreamerItemProps {
   streamer: Streamer;
-  isFirst: boolean;
-  isLast: boolean;
+  isDragging: boolean;
+  showDropBefore: boolean;
+  showDropAfter: boolean;
   onRemove: (id: string) => void;
-  onMove: (id: string, direction: 'up' | 'down') => void;
+  onDragStart: (event: React.PointerEvent) => void;
 }
 
 function formatViewerCount(count: number): string {
@@ -15,11 +16,29 @@ function formatViewerCount(count: number): string {
   return String(count);
 }
 
-export function StreamerItem({streamer, isFirst, isLast, onRemove, onMove}: StreamerItemProps) {
+export function StreamerItem({
+  streamer,
+  isDragging,
+  showDropBefore,
+  showDropAfter,
+  onRemove,
+  onDragStart,
+}: StreamerItemProps) {
+  const className = [
+    'streamer-item',
+    isDragging && 'streamer-item-dragging',
+    showDropBefore && 'streamer-item-drop-above',
+    showDropAfter && 'streamer-item-drop-below',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <li className="streamer-item">
+    <li className={className}>
       <span className="streamer-item-info">
-        <span className="streamer-rank">{streamer.rank}</span>
+        <span className="streamer-drag-handle" onPointerDown={onDragStart} title="Drag to reorder">
+          ⠿
+        </span>
         {streamer.profileImageUrl && (
           <img className="streamer-avatar" src={streamer.profileImageUrl} alt={streamer.username} />
         )}
@@ -39,22 +58,6 @@ export function StreamerItem({streamer, isFirst, isLast, onRemove, onMove}: Stre
         </span>
       </span>
       <span className="streamer-item-actions">
-        <Button
-          variant="icon"
-          disabled={isFirst}
-          onClick={() => onMove(streamer.id, 'up')}
-          title="Move up"
-        >
-          ↑
-        </Button>
-        <Button
-          variant="icon"
-          disabled={isLast}
-          onClick={() => onMove(streamer.id, 'down')}
-          title="Move down"
-        >
-          ↓
-        </Button>
         <Button variant="icon" onClick={() => onRemove(streamer.id)} title="Remove">
           ×
         </Button>

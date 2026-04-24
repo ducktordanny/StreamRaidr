@@ -23,7 +23,7 @@ function applyTheme(theme: Theme) {
 }
 
 export function Popup() {
-  const {streamers, loading, addStreamer, removeStreamer, moveStreamer} = useStreamers();
+  const {streamers, loading, addStreamer, removeStreamer, reorderStreamer} = useStreamers();
   const [showSettings, setShowSettings] = useState(false);
   const [autoWatchTabId, setLocalTabId] = useState<number | null>(null);
   const [currentTabId, setCurrentTabId] = useState<number | null>(null);
@@ -115,7 +115,11 @@ export function Popup() {
         <>
           {renderAutoWatchBar()}
           <AddStreamer onAdd={addStreamer} disabled={streamers.length >= MAX_STREAMERS} />
-          <StreamerList streamers={streamers} onRemove={removeStreamer} onMove={moveStreamer} />
+          <StreamerList
+            streamers={streamers}
+            onRemove={removeStreamer}
+            onReorder={reorderStreamer}
+          />
         </>
       )}
     </main>
