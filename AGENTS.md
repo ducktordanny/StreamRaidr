@@ -22,7 +22,7 @@ If guidance conflicts, follow this priority:
 
 ## Stack and Constraints
 
-- React 18 + TypeScript (strict mode)
+- React 19 + TypeScript (strict mode)
 - Vite + `@crxjs/vite-plugin`
 - Chrome Extension Manifest V3
 - Background service worker (no persistent background page)

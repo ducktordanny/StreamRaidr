@@ -28,7 +28,7 @@ export function Autocomplete<TItem extends AutocompleteItem>({
   disabled,
 }: AutocompleteProps<TItem>) {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   function handleSelect(item: TItem) {
     onSelect(item);

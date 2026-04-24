@@ -6,7 +6,7 @@ import {AUTOCOMPLETE_DEBOUNCE_MS} from '../../shared/constants';
 export function useTwitchApi() {
   const [searchResults, setSearchResults] = useState<TwitchSearchResult[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     return () => {

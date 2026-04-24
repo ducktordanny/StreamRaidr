@@ -86,6 +86,6 @@ src/
 
 ## Tech Stack
 
-- React 18 + TypeScript
+- React 19 + TypeScript
 - Vite + [@crxjs/vite-plugin](https://crxjs.dev/vite-plugin)
 - Chrome Extension Manifest V3
