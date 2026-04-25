@@ -1,0 +1,38 @@
+#streamraidr-autowatch-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 8px;
+  margin-right: 4px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(169, 112, 255, 0.3);
+  color: #a970ff;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background 0.2s ease;
+}
+
+#streamraidr-autowatch-badge:hover {
+  background: rgba(169, 112, 255, 0.5);
+  color: #fff;
+}
+
+#streamraidr-autowatch-badge .streamraidr-label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.2s ease,
+    margin-left 0.2s ease;
+  margin-left: 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#streamraidr-autowatch-badge:hover .streamraidr-label {
+  max-width: 128px;
+  margin-left: 8px;
+}
