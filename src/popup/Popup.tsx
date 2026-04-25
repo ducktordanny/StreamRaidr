@@ -130,7 +130,10 @@ export function Popup() {
   return (
     <main className="popup">
       <header className="popup-header">
-        <h1>StreamRaidr</h1>
+        <h1>
+          <img src="/logo.svg" alt="" width="20" height="20" />
+          StreamRaidr
+        </h1>
         <Button variant="icon" onClick={() => setShowSettings(!showSettings)} title="Settings">
           ⚙
         </Button>
