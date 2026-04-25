@@ -134,8 +134,12 @@ export function Popup() {
           <img src="/logo.svg" alt="" width="20" height="20" />
           StreamRaidr
         </h1>
-        <Button variant="icon" onClick={() => setShowSettings(!showSettings)} title="Settings">
-          ⚙
+        <Button
+          variant="icon"
+          onClick={() => setShowSettings(!showSettings)}
+          title={showSettings ? 'Home' : 'Settings'}
+        >
+          {showSettings ? '⌂' : '⚙'}
         </Button>
       </header>
       {renderContent()}
